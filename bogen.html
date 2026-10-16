@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Rückmeldung Hörtrainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap">
+
+<style>
+/* Layout: eine Spalte, die man von oben nach unten durcharbeitet.
+   Abschnitte als abgesetzte Karten, Antwortskalen als Reihe aus fünf
+   großen Tasten — gebaut für Daumen und für Augen, die nicht mehr die
+   besten sind. Schrift: Atkinson Hyperlegible (vom Braille Institute
+   für Lesbarkeit entworfen) für alles, was angefasst wird; Newsreader
+   für die Stimme dessen, der fragt. */
+:root {
+  --papier:      #fbfaf7;
+  --karte:       #ffffff;
+  --tinte:       #1b2127;
+  --leise:       #5c6771;
+  --linie:       #dfe2e0;
+  --blau:        #1B5E9E;
+  --blau-weich:  #e8f0f8;
+  --bernstein:   #a8741a;
+  --bernstein-weich: #fdf6e6;
+  --schatten:    0 1px 2px rgba(27,33,39,.06), 0 6px 20px rgba(27,33,39,.05);
+  --rund:        14px;
+
+  --schrift-text: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --schrift-stimme: "Newsreader", Georgia, "Times New Roman", serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier:      #15191d;
+    --karte:       #1d2228;
+    --tinte:       #e9edf0;
+    --leise:       #9aa6b0;
+    --linie:       #323a42;
+    --blau:        #79b4ea;
+    --blau-weich:  #1d2d3d;
+    --bernstein:   #e0b461;
+    --bernstein-weich: #2b2518;
+    --schatten:    0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier:      #15191d;
+  --karte:       #1d2228;
+  --tinte:       #e9edf0;
+  --leise:       #9aa6b0;
+  --linie:       #323a42;
+  --blau:        #79b4ea;
+  --blau-weich:  #1d2d3d;
+  --bernstein:   #e0b461;
+  --bernstein-weich: #2b2518;
+  --schatten:    0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--papier);
+  color: var(--tinte);
+  font-family: var(--schrift-text);
+  font-size: 17px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.huelle {
+  max-width: 660px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+
+/* ------------------------------------------------------------- Kopf */
+
+header { margin-bottom: 30px; }
+
+h1 {
+  font-family: var(--schrift-stimme);
+  font-weight: 600;
+  font-size: clamp(30px, 7vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+
+.vorwort {
+  font-family: var(--schrift-stimme);
+  font-size: 18.5px;
+  line-height: 1.6;
+  color: var(--tinte);
+  margin: 0 0 16px;
+}
+
+.vorwort + .vorwort { margin-top: -4px; }
+
+.merkzettel {
+  background: var(--bernstein-weich);
+  border-left: 4px solid var(--bernstein);
+  border-radius: 0 10px 10px 0;
+  padding: 13px 16px;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--tinte);
+}
+
+.merkzettel strong { color: var(--tinte); }
+
+/* --------------------------------------------------------- Abschnitt */
+
+section {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: var(--rund);
+  box-shadow: var(--schatten);
+  padding: 22px 20px 8px;
+  margin-bottom: 20px;
+}
+
+.nummer {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blau);
+  background: var(--blau-weich);
+  border-radius: 999px;
+  padding: 3px 11px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-family: var(--schrift-stimme);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+
+.untertitel {
+  color: var(--leise);
+  font-size: 15.5px;
+  margin: 0 0 18px;
+  line-height: 1.5;
+}
+
+/* ----------------------------------------------------------- Fragen */
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 22px;
+}
+
+fieldset + fieldset { border-top: 1px solid var(--linie); padding-top: 20px; }
+
+legend {
+  padding: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-bottom: 11px;
+}
+
+legend .zaehler {
+  display: inline-block;
+  min-width: 2.1em;
+  color: var(--leise);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tasten untereinander (Auswahl mit Text) */
+
+.wahl { display: flex; flex-direction: column; gap: 8px; }
+
+.wahl label {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  border: 1.5px solid var(--linie);
+  border-radius: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  line-height: 1.45;
+  transition: border-color .12s, background .12s;
+}
+
+.wahl label:hover { border-color: var(--blau); }
+
+.wahl input { margin: 3px 0 0; accent-color: var(--blau); flex: none; width: 18px; height: 18px; }
+
+.wahl input:checked + span { font-weight: 700; }
+
+.wahl label:has(input:checked) {
+  border-color: var(--blau);
+  background: var(--blau-weich);
+}
+
+/* Skala: fünf Tasten nebeneinander */
+
+.skala { display: flex; gap: 6px; }
+
+.skala label {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  border: 1.5px solid var(--linie);
+  border-radius: 10px;
+  padding: 12px 2px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--leise);
+  transition: border-color .12s, background .12s, color .12s;
+}
+
+.skala label:hover { border-color: var(--blau); }
+
+.skala input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.skala label:has(input:checked) {
+  border-color: var(--blau);
+  background: var(--blau);
+  color: #fff;
+}
+
+:root[data-theme="dark"] .skala label:has(input:checked),
+.skala label:has(input:checked) { color: var(--papier); }
+
+.skala label:has(input:focus-visible) { outline: 3px solid var(--blau); outline-offset: 2px; }
+
+.enden {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--leise);
+  margin-top: 7px;
+  line-height: 1.3;
+}
+
+.enden span:last-child { text-align: right; }
+
+/* Textfelder */
+
+textarea, input[type="text"] {
+  width: 100%;
+  font-family: var(--schrift-text);
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--tinte);
+  background: var(--papier);
+  border: 1.5px solid var(--linie);
+  border-radius: 10px;
+  padding: 11px 13px;
+  resize: vertical;
+}
+
+textarea:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--blau);
+  box-shadow: 0 0 0 3px var(--blau-weich);
+}
+
+textarea { min-height: 92px; }
+
+/* ----------------------------------------------------------- Abgabe */
+
+.abgabe { text-align: center; padding-block: 8px 0; }
+
+button {
+  font-family: var(--schrift-text);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--blau);
+  border: 0;
+  border-radius: 12px;
+  padding: 15px 30px;
+  cursor: pointer;
+  width: 100%;
+  transition: filter .12s;
+}
+
+:root[data-theme="dark"] button { color: var(--papier); }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) button { color: var(--papier); }
+}
+
+button:hover { filter: brightness(1.08); }
+button:focus-visible { outline: 3px solid var(--bernstein); outline-offset: 2px; }
+
+button.zweit {
+  background: transparent;
+  color: var(--blau);
+  border: 1.5px solid var(--blau);
+  font-size: 16px;
+  padding: 12px 22px;
+}
+
+.hinweis-offen {
+  color: var(--bernstein);
+  font-size: 15px;
+  margin-top: 12px;
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------- Ergebnis */
+
+#ergebnis { scroll-margin-top: 20px; }
+
+#ergebnis h2 { font-size: 26px; }
+
+#abschrift {
+  width: 100%;
+  min-height: 230px;
+  font-family: ui-monospace, "DejaVu Sans Mono", monospace;
+  font-size: 13.5px;
+  line-height: 1.45;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.knopfreihe { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.knopfreihe button { width: auto; flex: 1 1 180px; }
+
+.fuss {
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--linie);
+  font-size: 14.5px;
+  color: var(--leise);
+  line-height: 1.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="huelle">
+
+<header>
+  <h1>Was taugt der Hörtrainer?</h1>
+
+  <p class="vorwort">Du hast die App ein paar Tage ausprobiert — danke dafür.
+  Dieser Bogen dauert etwa fünf Minuten. Es gibt keine richtigen Antworten;
+  je ehrlicher, desto nützlicher.</p>
+
+  <p class="vorwort">Wenn dich etwas geärgert hat, schreib das bitte auf. Genau
+  das ist der Grund, warum du die App vor allen anderen bekommen hast.</p>
+
+  <div class="merkzettel">
+    <strong>Am Ende kommt kein Absenden-Knopf.</strong> Der Bogen schreibt deine
+    Antworten in ein Textfeld, das du kopierst und mir per WhatsApp oder E-Mail
+    schickst. Nichts verlässt dieses Fenster von allein — es wird nichts
+    gespeichert und nichts verschickt.
+  </div>
+</header>
+
+<form id="bogen">
+
+<!-- ==================================================== 1. Über dich -->
+<section>
+  <span class="nummer">Teil 1</span>
+  <h2>Kurz zu dir</h2>
+  <p class="untertitel">Vier Fragen, damit ich deine Antworten einordnen kann.
+  Keine davon ist eine Pflichtfrage.</p>
+
+  <fieldset>
+    <legend><span class="zaehler">1.</span>Ein Kürzel, damit ich deine Antworten zuordnen kann</legend>
+    <input type="text" id="f-kuerzel" name="kuerzel" placeholder="z. B. deine Initialen oder ein Spitzname" autocomplete="off">
+    <p class="enden"><span>Dein echter Name muss hier nicht stehen.</span></p>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">2.</span>Seit wann trägst du dein CI?</legend>
+    <div class="wahl" data-frage="ci-dauer">
+      <label><input type="radio" name="ci-dauer" value="unter 1 Jahr"><span>Weniger als ein Jahr</span></label>
+      <label><input type="radio" name="ci-dauer" value="1 bis 3 Jahre"><span>Ein bis drei Jahre</span></label>
+      <label><input type="radio" name="ci-dauer" value="3 bis 10 Jahre"><span>Drei bis zehn Jahre</span></label>
+      <label><input type="radio" name="ci-dauer" value="ueber 10 Jahre"><span>Länger als zehn Jahre</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">3.</span>Wie hörst du?</legend>
+    <div class="wahl" data-frage="versorgung">
+      <label><input type="radio" name="versorgung" value="einseitig CI"><span>Ein CI</span></label>
+      <label><input type="radio" name="versorgung" value="beidseitig CI"><span>Zwei CI</span></label>
+      <label><input type="radio" name="versorgung" value="CI + Hoergeraet"><span>Ein CI und auf der anderen Seite ein Hörgerät</span></label>
+      <label><input type="radio" name="versorgung" value="anders"><span>Anders</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">4.</span>Wie ist der Ton bei dir angekommen?</legend>
+    <div class="wahl" data-frage="tonweg">
+      <label><input type="radio" name="tonweg" value="gestreamt"><span>Direkt ins CI gestreamt (Bluetooth)</span></label>
+      <label><input type="radio" name="tonweg" value="Handylautsprecher"><span>Über den Lautsprecher des Handys</span></label>
+      <label><input type="radio" name="tonweg" value="Kopfhoerer"><span>Über Kopfhörer</span></label>
+      <label><input type="radio" name="tonweg" value="gewechselt"><span>Mal so, mal so</span></label>
+      <label><input type="radio" name="tonweg" value="weiss nicht"><span>Weiß ich nicht</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">5.</span>Wie oft hast du geübt?</legend>
+    <div class="wahl" data-frage="haeufigkeit">
+      <label><input type="radio" name="haeufigkeit" value="einmal reingeschaut"><span>Einmal reingeschaut</span></label>
+      <label><input type="radio" name="haeufigkeit" value="2-3 Tage"><span>An zwei oder drei Tagen</span></label>
+      <label><input type="radio" name="haeufigkeit" value="fast taeglich"><span>Fast täglich</span></label>
+      <label><input type="radio" name="haeufigkeit" value="taeglich"><span>Jeden Tag</span></label>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ============================================== 2. Die zehn Fragen -->
+<section>
+  <span class="nummer">Teil 2</span>
+  <h2>Die Bedienung</h2>
+  <p class="untertitel">Zehn Fragen nach einem festen Schema, das seit 1986 für
+  genau diesen Zweck benutzt wird. Dadurch lässt sich das Ergebnis mit anderen
+  Programmen vergleichen. Die Sätze klingen deshalb etwas steif — und manche
+  sind absichtlich verneint, also bitte jeweils neu lesen.</p>
+  <p class="untertitel"><strong>1 heißt: stimmt überhaupt nicht. 5 heißt:
+  stimmt voll und ganz.</strong> Antworte spontan; lange Überlegen macht die
+  Antwort nicht besser.</p>
+
+  <div id="sus-fragen"></div>
+</section>
+
+<!-- =================================================== 3. Das Üben -->
+<section>
+  <span class="nummer">Teil 3</span>
+  <h2>Das Üben selbst</h2>
+  <p class="untertitel">Jetzt geht es nicht mehr um die Knöpfe, sondern um das,
+  was dabei in deinem Kopf passiert.</p>
+
+  <fieldset>
+    <legend><span class="zaehler">16.</span>Wie schwer waren die Aufgaben für dich?</legend>
+    <div class="wahl" data-frage="schwierigkeit">
+      <label><input type="radio" name="schwierigkeit" value="viel zu leicht"><span>Viel zu leicht — ich habe fast alles verstanden</span></label>
+      <label><input type="radio" name="schwierigkeit" value="etwas zu leicht"><span>Etwas zu leicht</span></label>
+      <label><input type="radio" name="schwierigkeit" value="genau richtig"><span>Genau richtig: anstrengend, aber machbar</span></label>
+      <label><input type="radio" name="schwierigkeit" value="etwas zu schwer"><span>Etwas zu schwer</span></label>
+      <label><input type="radio" name="schwierigkeit" value="viel zu schwer"><span>Viel zu schwer — ich habe meistens geraten</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">17.</span>Wie anstrengend war das Üben?</legend>
+    <div class="wahl" data-frage="anstrengung">
+      <label><input type="radio" name="anstrengung" value="gar nicht"><span>Gar nicht</span></label>
+      <label><input type="radio" name="anstrengung" value="etwas"><span>Etwas — wie ein normales Gespräch</span></label>
+      <label><input type="radio" name="anstrengung" value="ziemlich"><span>Ziemlich — danach brauchte ich eine Pause</span></label>
+      <label><input type="radio" name="anstrengung" value="sehr"><span>Sehr — ich musste abbrechen</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">18.</span>Hast du eine Einstellung gesucht und nicht gefunden?</legend>
+    <div class="wahl" data-frage="gesucht">
+      <label><input type="radio" name="gesucht" value="nein"><span>Nein, ich habe alles gefunden</span></label>
+      <label><input type="radio" name="gesucht" value="ja"><span>Ja — und zwar:</span></label>
+      <label><input type="radio" name="gesucht" value="nicht gesucht"><span>Ich habe gar nicht in den Einstellungen nachgesehen</span></label>
+    </div>
+    <textarea id="f-gesucht-text" name="gesucht-text" placeholder="Falls ja: Was hast du gesucht?" style="margin-top:9px;min-height:62px"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">19.</span>Was von alldem war für dich am nützlichsten?</legend>
+    <div class="wahl" data-frage="nuetzlich">
+      <label><input type="radio" name="nuetzlich" value="Tagesblock"><span>Der Tagesblock</span></label>
+      <label><input type="radio" name="nuetzlich" value="Woerter"><span>Die Wörter</span></label>
+      <label><input type="radio" name="nuetzlich" value="Zahlen"><span>Zahlen und Uhrzeiten</span></label>
+      <label><input type="radio" name="nuetzlich" value="Saetze"><span>Sätze verstehen</span></label>
+      <label><input type="radio" name="nuetzlich" value="Lautkontraste"><span>Die Lautkontraste</span></label>
+      <label><input type="radio" name="nuetzlich" value="Bericht"><span>Der Bericht / die Auswertung</span></label>
+      <label><input type="radio" name="nuetzlich" value="nichts davon"><span>Nichts davon so richtig</span></label>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ============================================ 4. In eigenen Worten -->
+<section>
+  <span class="nummer">Teil 4</span>
+  <h2>In deinen eigenen Worten</h2>
+  <p class="untertitel">Der wichtigste Teil. Ein Satz je Feld reicht völlig —
+  und leer lassen ist auch eine Antwort.</p>
+
+  <fieldset>
+    <legend><span class="zaehler">20.</span>Gab es einen Moment, in dem du nicht weiterwusstest?</legend>
+    <textarea id="f-steckengeblieben" name="steckengeblieben" placeholder="Wo warst du, und was hast du erwartet?"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">21.</span>Was hat dir am besten gefallen?</legend>
+    <textarea id="f-gefallen" name="gefallen"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">22.</span>Was würdest du als Erstes ändern?</legend>
+    <textarea id="f-aendern" name="aendern"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">23.</span>Würdest du weiter damit üben? Warum, oder warum nicht?</legend>
+    <textarea id="f-weiter" name="weiter"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend><span class="zaehler">24.</span>Sonst noch etwas?</legend>
+    <textarea id="f-sonst" name="sonst" placeholder="Auch „Knopf an der falschen Stelle“ ist hilfreich."></textarea>
+  </fieldset>
+</section>
+
+<div class="abgabe">
+  <button type="submit" id="fertig">Antworten zusammenstellen</button>
+  <p class="hinweis-offen" id="offen" hidden></p>
+</div>
+
+</form>
+
+<!-- ========================================================= Ergebnis -->
+<section id="ergebnis" hidden>
+  <span class="nummer">Fertig</span>
+  <h2>Danke. Jetzt noch kopieren und abschicken.</h2>
+  <p class="untertitel">Tippe auf <strong>Kopieren</strong>, öffne WhatsApp oder
+  dein E-Mail-Programm, füge den Text ein und schick ihn ab. Falls das Kopieren
+  nicht geht: Text markieren und von Hand kopieren — oder einfach einen
+  Screenshot machen.</p>
+
+  <textarea id="abschrift" readonly aria-label="Deine Antworten zum Kopieren"></textarea>
+
+  <div class="knopfreihe">
+    <button type="button" id="kopieren">Kopieren</button>
+    <button type="button" class="zweit" id="zurueck">Zurück zum Bogen</button>
+  </div>
+</section>
+
+<p class="fuss">
+  Hörtrainer CI ist ein Übungsprogramm und kein Medizinprodukt. Dieser Bogen
+  fragt nichts über deine Gesundheit ab, speichert nichts und schickt nichts
+  weg — er stellt nur deine eigenen Antworten als Text zusammen. Was du damit
+  machst, entscheidest du.
+</p>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Die zehn Fragen der System Usability Scale (Brooke 1986), ins
+     Deutsche übertragen. Reihenfolge und Polung bleiben wie im
+     Original: ungerade Sätze sind zustimmend formuliert, gerade
+     ablehnend. Wer das umsortiert, macht die Auswertung kaputt. */
+  var SUS = [
+    "Ich könnte mir gut vorstellen, die App regelmäßig zu benutzen.",
+    "Ich finde die App unnötig kompliziert.",
+    "Ich finde die App einfach zu bedienen.",
+    "Ich glaube, ich bräuchte Hilfe von jemandem, der sich auskennt, um die App benutzen zu können.",
+    "Die verschiedenen Teile der App passen gut zusammen.",
+    "Die App wirkt auf mich uneinheitlich — an verschiedenen Stellen funktioniert sie unterschiedlich.",
+    "Ich glaube, die meisten Leute kommen sehr schnell mit der App zurecht.",
+    "Die Bedienung der App ist umständlich.",
+    "Ich habe mich beim Benutzen sicher gefühlt.",
+    "Ich musste eine Menge lernen, bevor ich mit der App zurechtkam."
+  ];
+
+  var ENDEN = ["stimmt überhaupt nicht", "stimmt voll und ganz"];
+
+  /* --------------------------------------------------- Fragen bauen */
+
+  var behaelter = document.getElementById("sus-fragen");
+
+  SUS.forEach(function (satz, i) {
+    var nr = i + 1;
+    var fs = document.createElement("fieldset");
+
+    var lg = document.createElement("legend");
+    var z = document.createElement("span");
+    z.className = "zaehler";
+    z.textContent = (nr + 5) + ".";
+    lg.appendChild(z);
+    lg.appendChild(document.createTextNode(satz));
+    fs.appendChild(lg);
+
+    var reihe = document.createElement("div");
+    reihe.className = "skala";
+    for (var w = 1; w <= 5; w++) {
+      var lab = document.createElement("label");
+      var inp = document.createElement("input");
+      inp.type = "radio";
+      inp.name = "sus" + nr;
+      inp.value = String(w);
+      inp.id = "sus" + nr + "-" + w;
+      var txt = document.createElement("span");
+      txt.textContent = String(w);
+      lab.appendChild(inp);
+      lab.appendChild(txt);
+      lab.setAttribute("aria-label", "Frage " + nr + ", Wert " + w);
+      reihe.appendChild(lab);
+    }
+    fs.appendChild(reihe);
+
+    var enden = document.createElement("div");
+    enden.className = "enden";
+    var links = document.createElement("span");
+    links.textContent = "1 — " + ENDEN[0];
+    var rechts = document.createElement("span");
+    rechts.textContent = "5 — " + ENDEN[1];
+    enden.appendChild(links);
+    enden.appendChild(rechts);
+    fs.appendChild(enden);
+
+    behaelter.appendChild(fs);
+  });
+
+  /* ------------------------------------------------------ Auswerten */
+
+  /* SUS-Punktwert: ungerade Fragen zählen (Antwort − 1), gerade
+     (5 − Antwort); die Summe mal 2,5 ergibt 0 bis 100. 68 ist der
+     Durchschnitt über viele tausend erhobene Bögen. */
+  function susWert(antworten) {
+    var summe = 0;
+    for (var i = 0; i < 10; i++) {
+      var a = antworten[i];
+      if (!a) return null;
+      summe += (i % 2 === 0) ? (a - 1) : (5 - a);
+    }
+    return Math.round(summe * 2.5 * 10) / 10;
+  }
+
+  function gewaehlt(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  function text(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : "";
+  }
+
+  function zeile(beschriftung, wert) {
+    return beschriftung + ": " + (wert || "—");
+  }
+
+  /* ------------------------------------------------------- Abschrift */
+
+  var FREITEXT = [
+    ["20 Steckengeblieben", "f-steckengeblieben"],
+    ["21 Gefallen",         "f-gefallen"],
+    ["22 Als Erstes ändern","f-aendern"],
+    ["23 Weiter üben",      "f-weiter"],
+    ["24 Sonst noch",       "f-sonst"]
+  ];
+
+  function baueAbschrift() {
+    var sus = [];
+    for (var i = 1; i <= 10; i++) sus.push(Number(gewaehlt("sus" + i)) || 0);
+    var wert = susWert(sus);
+
+    var heute = new Date();
+    var datum = String(heute.getDate()).padStart(2, "0") + "." +
+                String(heute.getMonth() + 1).padStart(2, "0") + "." +
+                heute.getFullYear();
+
+    var z = [];
+    z.push("HÖRTRAINER CI — RÜCKMELDUNG");
+    z.push("============================");
+    z.push(zeile("Kürzel", text("f-kuerzel")));
+    z.push(zeile("Datum", datum));
+    z.push("");
+    z.push("TEIL 1 — ZUR PERSON");
+    z.push(zeile("  CI seit", gewaehlt("ci-dauer")));
+    z.push(zeile("  Versorgung", gewaehlt("versorgung")));
+    z.push(zeile("  Ton kam an über", gewaehlt("tonweg")));
+    z.push(zeile("  Geübt", gewaehlt("haeufigkeit")));
+    z.push("");
+    z.push("TEIL 2 — BEDIENUNG (SUS, 1 bis 5)");
+    z.push("  Antworten 1-10: " + sus.map(function (a) { return a || "-"; }).join(" "));
+    z.push("  SUS-Punktwert:  " + (wert === null ? "unvollständig" : wert + " von 100"));
+    z.push("");
+    z.push("TEIL 3 — DAS ÜBEN");
+    z.push(zeile("  Schwierigkeit", gewaehlt("schwierigkeit")));
+    z.push(zeile("  Anstrengung", gewaehlt("anstrengung")));
+    z.push(zeile("  Einstellung vermisst", gewaehlt("gesucht")));
+    var gt = text("f-gesucht-text");
+    if (gt) z.push("    und zwar: " + gt);
+    z.push(zeile("  Am nützlichsten", gewaehlt("nuetzlich")));
+    z.push("");
+    z.push("TEIL 4 — IN EIGENEN WORTEN");
+    FREITEXT.forEach(function (paar) {
+      var t = text(paar[1]);
+      z.push("  " + paar[0] + ":");
+      z.push("    " + (t ? t.replace(/\n/g, "\n    ") : "—"));
+    });
+
+    return z.join("\n");
+  }
+
+  /* ------------------------------------------------------- Bedienung */
+
+  var form = document.getElementById("bogen");
+  var ergebnis = document.getElementById("ergebnis");
+  var abschrift = document.getElementById("abschrift");
+  var offen = document.getElementById("offen");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Unbeantwortete SUS-Fragen zählen — aber niemanden aufhalten.
+    var fehlend = [];
+    for (var i = 1; i <= 10; i++) if (!gewaehlt("sus" + i)) fehlend.push(i + 5);
+
+    if (fehlend.length) {
+      offen.hidden = false;
+      offen.textContent = fehlend.length === 1
+        ? "Frage " + fehlend[0] + " ist noch offen. Ohne sie lässt sich der Punktwert nicht ausrechnen — abschicken kannst du den Bogen trotzdem."
+        : "Noch offen: Fragen " + fehlend.join(", ") + ". Ohne sie lässt sich der Punktwert nicht ausrechnen — abschicken kannst du den Bogen trotzdem.";
+    } else {
+      offen.hidden = true;
+    }
+
+    abschrift.value = baueAbschrift();
+    ergebnis.hidden = false;
+    ergebnis.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.getElementById("zurueck").addEventListener("click", function () {
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  var knopf = document.getElementById("kopieren");
+  knopf.addEventListener("click", function () {
+    function geschafft() {
+      knopf.textContent = "Kopiert ✓";
+      setTimeout(function () { knopf.textContent = "Kopieren"; }, 2200);
+    }
+    function vonHand() {
+      abschrift.focus();
+      abschrift.select();
+      knopf.textContent = "Bitte von Hand kopieren";
+      setTimeout(function () { knopf.textContent = "Kopieren"; }, 3000);
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(abschrift.value).then(geschafft, vonHand);
+      } else {
+        vonHand();
+      }
+    } catch (e) {
+      vonHand();
+    }
+  });
+})();
+</script>
+</body>
+</html>
