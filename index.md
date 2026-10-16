@@ -1,8 +1,8 @@
 # Datenschutzerklärung für die App „Hörtrainer CI"
 
-Stand: **\[15.10.2026]**
+Stand: **\15.10.2026**
 
-Verantwortlich: **\[Bernd Misbach]**, **\[berndmisbach@googlemail.com]**
+Verantwortlich: **\Bernd Misbach**, **\hoertrainerci@googlemail.com**
 
 \---
 
